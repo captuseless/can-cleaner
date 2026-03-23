@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(///wsl$/OracleLinux_9/home/terry/Projects/can-cleaner/**)",
+      "Read(///wsl$/OracleLinux_9/home/terry/Projects/can-cleaner/wsl$OracleLinux_9hometerryProjectscan-cleaner/**)"
+    ]
+  }
+}

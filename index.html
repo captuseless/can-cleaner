@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>River City Can Cleaners</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0d1b2a;
+      --river:   #1a6b8a;
+      --sky:     #4cb8d4;
+      --foam:    #e8f7fb;
+      --white:   #ffffff;
+      --slate:   #5a6a78;
+      --clean:   #00c9a7;
+      --warn:    #ff6b35;
+      --border:  #cde6ef;
+      --shadow:  0 8px 40px rgba(13,27,42,.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--navy);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND CANVAS ── */
+    .bg-canvas {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,107,138,.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 85% 80%, rgba(76,184,212,.2) 0%, transparent 55%),
+        var(--navy);
+    }
+    .bg-canvas::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(76,184,212,0.06)' stroke-width='1'%3E%3Cpath d='M0 30 Q15 10 30 30 Q45 50 60 30'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 60px 60px;
+    }
+
+    /* ── WRAPPER ── */
+    .wrapper { position: relative; z-index: 1; }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid rgba(76,184,212,.15);
+      backdrop-filter: blur(8px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,27,42,.7);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: .9rem;
+    }
+    .nav-logo-icon {
+      width: 44px; height: 44px; background: var(--river);
+      border-radius: 10px; display: grid; place-items: center;
+      font-size: 22px;
+    }
+    .nav-logo-text { line-height: 1.1; }
+    .nav-logo-text strong {
+      display: block; font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: .06em; color: var(--white);
+    }
+    .nav-logo-text span { font-size: .72rem; color: var(--sky); letter-spacing: .08em; text-transform: uppercase; }
+
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: rgba(255,255,255,.65);
+      font-size: .88rem; font-weight: 500; letter-spacing: .03em;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--sky); }
+    .nav-cta {
+      background: var(--clean); color: var(--navy) !important;
+      padding: .5rem 1.2rem; border-radius: 6px; font-weight: 600 !important;
+    }
+    .nav-cta:hover { background: #00b096; color: var(--navy) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 6rem 2rem 5rem;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(76,184,212,.12); border: 1px solid rgba(76,184,212,.3);
+      color: var(--sky); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .4rem 1rem; border-radius: 999px; margin-bottom: 1.8rem;
+      font-family: 'DM Mono', monospace;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      letter-spacing: .04em; line-height: .95;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span { color: var(--sky); }
+    .hero p {
+      max-width: 560px; margin: 0 auto 2.5rem;
+      color: rgba(255,255,255,.6); font-size: 1.08rem; line-height: 1.7;
+    }
+    .hero-arrows { display: flex; justify-content: center; gap: 1rem; margin-bottom: 3.5rem; }
+    .hero-arrows a {
+      display: inline-flex; align-items: center; gap: .5rem;
+      text-decoration: none; font-weight: 600; font-size: .95rem;
+      padding: .75rem 1.8rem; border-radius: 8px; transition: all .2s;
+    }
+    .btn-primary { background: var(--clean); color: var(--navy); }
+    .btn-primary:hover { background: #00b096; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,201,167,.3); }
+    .btn-ghost { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,.25); }
+    .btn-ghost:hover { border-color: var(--sky); color: var(--sky); }
+
+    /* STATS ROW */
+    .stats {
+      display: flex; justify-content: center; gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem; color: var(--sky); letter-spacing: .05em;
+    }
+    .stat-label { font-size: .78rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .1em; }
+
+    /* DIVIDER WAVE */
+    .wave { width: 100%; overflow: hidden; line-height: 0; }
+    .wave svg { display: block; }
+
+    /* ── CONTENT SECTION ── */
+    .content-area { background: var(--foam); }
+
+    /* HOW IT WORKS */
+    .section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: .75rem;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--river);
+      margin-bottom: .8rem;
+    }
+    .section h2 {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: .04em; color: var(--navy); margin-bottom: 3rem;
+    }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1.5rem; }
+    .step {
+      background: var(--white); border-radius: 14px; padding: 2rem;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .step:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 4rem;
+      color: rgba(26,107,138,.1); position: absolute; top: .5rem; right: 1rem;
+      letter-spacing: .05em; line-height: 1;
+    }
+    .step-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .step h3 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; color: var(--navy); }
+    .step p { font-size: .88rem; color: var(--slate); line-height: 1.6; }
+
+    /* ── BOOKING / PAYMENT FORM ── */
+    .form-section {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+    }
+    .form-container {
+      max-width: 900px; margin: 0 auto; padding: 5rem 2rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+    }
+    @media(max-width:700px) { .form-container { grid-template-columns: 1fr; } }
+
+    .form-info { position: sticky; top: 100px; }
+    .form-info .section-label { color: var(--river); }
+    .form-info h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem,4vw,2.8rem); letter-spacing: .04em; color: var(--navy); margin-bottom: 1rem;
+    }
+    .form-info p { color: var(--slate); font-size: .93rem; line-height: 1.7; margin-bottom: 1.5rem; }
+
+    .price-box {
+      background: var(--navy); border-radius: 12px; padding: 1.5rem;
+      color: var(--white);
+    }
+    .price-label { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sky); margin-bottom: .4rem; font-family: 'DM Mono', monospace; }
+    .price-amount {
+      font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: .04em;
+      color: var(--white); line-height: 1;
+    }
+    .price-amount sup { font-size: 1.4rem; vertical-align: top; margin-top: .4rem; }
+    .price-sub { font-size: .8rem; color: rgba(255,255,255,.45); margin-top: .4rem; }
+    .price-includes { margin-top: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+    .price-item { display: flex; align-items: center; gap: .6rem; font-size: .83rem; color: rgba(255,255,255,.75); }
+    .price-item::before { content: '✓'; color: var(--clean); font-weight: 700; }
+
+    /* FORM ITSELF */
+    .booking-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:480px) { .form-row { grid-template-columns: 1fr; } }
+    label { font-size: .82rem; font-weight: 600; color: var(--navy); letter-spacing: .02em; }
+    label span { color: var(--warn); }
+
+    input, select, textarea {
+      padding: .75rem 1rem; border: 1.5px solid var(--border);
+      border-radius: 8px; font-family: 'DM Sans', sans-serif;
+      font-size: .92rem; color: var(--navy); background: var(--foam);
+      transition: border-color .2s, box-shadow .2s; outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--river); box-shadow: 0 0 0 3px rgba(26,107,138,.12);
+      background: var(--white);
+    }
+    select { appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6a78' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    .section-divider {
+      border: none; border-top: 1.5px dashed var(--border); margin: .5rem 0;
+    }
+    .form-section-title {
+      font-family: 'DM Mono', monospace; font-size: .72rem;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--river);
+      padding: .3rem 0;
+    }
+
+    /* CARD INPUT STYLING */
+    .card-fields { display: flex; flex-direction: column; gap: 1rem; }
+    .card-number-wrap { position: relative; }
+    .card-number-wrap input { padding-right: 5rem; }
+    .card-icons { position: absolute; right: .8rem; top: 50%; transform: translateY(-50%); display: flex; gap: .3rem; }
+    .card-icon { width: 32px; height: 20px; border-radius: 3px; background: #eee; display: grid; place-items: center; font-size: .55rem; font-weight: 700; color: #555; }
+    .card-icon.visa { background: #1a1f71; color: white; }
+    .card-icon.mc { background: linear-gradient(90deg,#eb001b 50%,#f79e1b 50%); color: transparent; border-radius: 3px; overflow:hidden; }
+
+    .lock-badge {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .75rem; color: var(--slate); margin-top: -.3rem;
+    }
+    .lock-badge::before { content: '🔒'; }
+
+    .submit-btn {
+      background: var(--clean); color: var(--navy);
+      border: none; border-radius: 10px; padding: 1rem;
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
+      font-size: 1rem; cursor: pointer; letter-spacing: .02em;
+      transition: all .2s; position: relative; overflow: hidden;
+      margin-top: .5rem;
+    }
+    .submit-btn:hover { background: #00b096; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,201,167,.3); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn .btn-inner { display: flex; align-items: center; justify-content: center; gap: .6rem; }
+
+    /* SUCCESS STATE */
+    .success-overlay {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 3rem 1.5rem;
+    }
+    .success-overlay.active { display: flex; }
+    .success-check {
+      width: 80px; height: 80px; background: var(--clean);
+      border-radius: 50%; display: grid; place-items: center;
+      font-size: 2.2rem; margin-bottom: 1.5rem;
+      animation: pop .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-overlay h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: .05em; color: var(--navy); margin-bottom: .5rem; }
+    .success-overlay p { color: var(--slate); font-size: .93rem; line-height: 1.6; }
+
+    /* ── MEMBER TEASER ── */
+    .member-section {
+      background: var(--navy);
+      padding: 5rem 2rem;
+    }
+    .member-inner {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;
+    }
+    @media(max-width:650px) { .member-inner { grid-template-columns: 1fr; } }
+
+    .member-text .section-label { color: var(--sky); }
+    .member-text h2 {
+      font-family: 'Bebas Neue', sans-serif; font-size: clamp(2rem,4vw,2.8rem);
+      letter-spacing: .04em; color: var(--white); margin-bottom: 1rem;
+    }
+    .member-text p { color: rgba(255,255,255,.6); font-size: .93rem; line-height: 1.7; margin-bottom: 1.5rem; }
+
+    .member-perks { display: flex; flex-direction: column; gap: .7rem; }
+    .perk { display: flex; align-items: center; gap: .8rem; color: rgba(255,255,255,.75); font-size: .88rem; }
+    .perk-icon { width: 30px; height: 30px; border-radius: 6px; background: rgba(76,184,212,.15); display: grid; place-items: center; font-size: 1rem; flex-shrink: 0; }
+
+    .member-card {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(76,184,212,.2);
+      border-radius: 16px; padding: 2rem; backdrop-filter: blur(8px);
+    }
+    .member-card-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: .05em;
+      color: var(--sky); margin-bottom: 1rem;
+    }
+    .member-price-big {
+      font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--white); letter-spacing: .04em; line-height: 1;
+    }
+    .member-price-big sup { font-size: 1.5rem; vertical-align: top; margin-top: .5rem; }
+    .member-price-period { font-size: .8rem; color: rgba(255,255,255,.4); margin-bottom: 1.5rem; font-family: 'DM Mono', monospace; }
+    .coming-soon-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(0,201,167,.15); border: 1px solid rgba(0,201,167,.3);
+      color: var(--clean); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+      padding: .4rem .9rem; border-radius: 999px; font-family: 'DM Mono', monospace;
+      margin-bottom: 1.5rem;
+    }
+    .notify-form { display: flex; gap: .6rem; flex-wrap: wrap; }
+    .notify-form input {
+      flex: 1; min-width: 160px; background: rgba(255,255,255,.08);
+      border-color: rgba(76,184,212,.3); color: var(--white);
+    }
+    .notify-form input::placeholder { color: rgba(255,255,255,.3); }
+    .notify-form input:focus { border-color: var(--sky); }
+    .notify-btn {
+      background: var(--sky); color: var(--navy);
+      border: none; border-radius: 8px; padding: .75rem 1.2rem;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: .88rem;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .notify-btn:hover { background: #3aafc8; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #080f17; border-top: 1px solid rgba(76,184,212,.1);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    footer .footer-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+      letter-spacing: .06em; color: var(--white); margin-bottom: .5rem;
+    }
+    footer p { color: rgba(255,255,255,.3); font-size: .8rem; }
+    footer .footer-links { display: flex; justify-content: center; gap: 2rem; margin: 1rem 0; }
+    footer .footer-links a { color: rgba(255,255,255,.4); text-decoration: none; font-size: .82rem; transition: color .2s; }
+    footer .footer-links a:hover { color: var(--sky); }
+
+    /* ANIMATIONS */
+    .fade-up { opacity: 0; transform: translateY(24px); animation: fadeUp .6s ease forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: none; } }
+    .delay-1 { animation-delay: .1s; }
+    .delay-2 { animation-delay: .2s; }
+    .delay-3 { animation-delay: .3s; }
+    .delay-4 { animation-delay: .45s; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+      background: var(--navy); color: var(--white); border-left: 4px solid var(--clean);
+      padding: 1rem 1.4rem; border-radius: 10px; font-size: .88rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+      transform: translateX(120%); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      max-width: 300px;
+    }
+    .toast.show { transform: translateX(0); }
+  </style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="wrapper">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🗑️</div>
+      <div class="nav-logo-text">
+        <strong>River City</strong>
+        <span>Can Cleaners</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#book">Pricing</a>
+      <a href="#membership">Membership</a>
+      <a href="#payment" class="nav-cta">Book a Clean</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge fade-up">🌊 Serving the River City area</div>
+    <h1 class="fade-up delay-1">Your Cans.<br><span>Sparkling</span> Clean.</h1>
+    <p class="fade-up delay-2">Professional trash can sanitizing that eliminates odors, bacteria, and grime — right at your curb. Schedule a one-time clean or join our monthly membership.</p>
+    <div class="hero-arrows fade-up delay-3">
+      <a href="#payment" class="btn-primary">Book a One-Time Clean ↓</a>
+      <a href="#membership" class="btn-ghost">View Membership →</a>
+    </div>
+    <div class="stats fade-up delay-4">
+      <div class="stat"><div class="stat-num">99%</div><div class="stat-label">Bacteria Removed</div></div>
+      <div class="stat"><div class="stat-num">2<span style="font-size:1.2rem">min</span></div><div class="stat-label">Service Time</div></div>
+      <div class="stat"><div class="stat-num">ECO</div><div class="stat-label">Safe Cleaners</div></div>
+    </div>
+  </section>
+
+  <!-- WAVE TRANSITION -->
+  <div class="wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#e8f7fb"/>
+    </svg>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="content-area">
+    <div class="section" id="how-it-works">
+      <div class="section-label">The Process</div>
+      <h2>Clean in 3 Easy Steps</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon">📋</div>
+          <h3>Book Online</h3>
+          <p>Fill out the form below with your address and preferred pickup day. Takes less than 2 minutes.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon">🗓️</div>
+          <h3>We Show Up</h3>
+          <p>On your trash pickup day, leave your cans at the curb. We come by the <strong>next day</strong> after the truck and do the rest.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon">✨</div>
+          <h3>Enjoy Fresh Cans</h3>
+          <p>Power-washed, deodorized, and sanitized — returned to your curb smelling brand new.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-icon">♻️</div>
+          <h3>Eco-Friendly</h3>
+          <p>We use biodegradable, pet-safe cleaning solutions. The waste water is properly disposed of — never in storm drains.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING FORM -->
+  <div class="form-section" id="book">
+    <div id="payment" style="position:relative;top:-80px;visibility:hidden;"></div>
+    <div class="form-container">
+
+      <!-- LEFT: Info & Pricing -->
+      <div class="form-info">
+        <div class="section-label">One-Time Service</div>
+        <h2>Book Your Clean</h2>
+        <p>No subscription required. Pay once, get sparkling cans on your next trash day.</p>
+        <div class="price-box">
+          <div class="price-label">One-Time Service</div>
+          <div class="price-amount"><sup>$</sup>35</div>
+          <div class="price-sub">Per cleaning visit · up to 2 cans</div>
+          <div class="price-includes">
+            <div class="price-item">High-pressure hot water wash</div>
+            <div class="price-item">Deodorizing spray treatment</div>
+            <div class="price-item">Sanitizing rinse (kills 99% bacteria)</div>
+            <div class="price-item">Returned to your curb next day</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Form -->
+      <div>
+        <form class="booking-form" id="bookingForm">
+
+          <div class="form-section-title">Your Information</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fname">First Name <span>*</span></label>
+              <input type="text" id="fname" name="fname" placeholder="Jane" required />
+            </div>
+            <div class="form-group">
+              <label for="lname">Last Name <span>*</span></label>
+              <input type="text" id="lname" name="lname" placeholder="Smith" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address <span>*</span></label>
+            <input type="email" id="email" name="email" placeholder="jane@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="(573) 555-0100" />
+          </div>
+
+          <hr class="section-divider" />
+          <div class="form-section-title">Service Address</div>
+
+          <div class="form-group">
+            <label for="address">Street Address <span>*</span></label>
+            <input type="text" id="address" name="address" placeholder="123 Riverside Dr" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City <span>*</span></label>
+              <input type="text" id="city" name="city" placeholder="Washington" value="Washington" required />
+            </div>
+            <div class="form-group">
+              <label for="zip">ZIP Code <span>*</span></label>
+              <input type="text" id="zip" name="zip" placeholder="63090" value="63090" maxlength="5" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pickup-day">Trash Pickup Day <span>*</span></label>
+            <select id="pickup-day" name="pickup-day" required>
+              <option value="" disabled selected>— Select your pickup day —</option>
+              <option value="monday">Monday</option>
+              <option value="tuesday">Tuesday</option>
+              <option value="wednesday">Wednesday</option>
+              <option value="thursday">Thursday</option>
+              <option value="friday">Friday</option>
+            </select>
+            <div style="display:flex;align-items:flex-start;gap:.5rem;margin-top:.5rem;background:#e8f7fb;border:1px solid #cde6ef;border-radius:7px;padding:.55rem .8rem;">
+              <span style="font-size:1rem;flex-shrink:0;">📅</span>
+              <span style="font-size:.8rem;color:#1a6b8a;line-height:1.5;">Your cleaning will take place the <strong>day after</strong> your trash pickup day, once your cans are back at the curb.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="num-cans">Number of Cans <span>*</span></label>
+            <select id="num-cans" name="num-cans" required>
+              <option value="" disabled selected>— How many cans? —</option>
+              <option value="1">1 Can ($35)</option>
+              <option value="2">2 Cans ($35 — included)</option>
+              <option value="3">3 Cans ($50)</option>
+              <option value="4">4+ Cans — we'll contact you for a quote</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Special Instructions (optional)</label>
+            <textarea id="notes" name="notes" rows="2" placeholder="Gate code, can location, etc."></textarea>
+          </div>
+
+          <hr class="section-divider" />
+          <div class="form-section-title">Payment Information</div>
+
+          <div class="card-fields">
+            <div class="form-group">
+              <label for="card-name">Name on Card <span>*</span></label>
+              <input type="text" id="card-name" name="card-name" placeholder="Jane Smith" required />
+            </div>
+            <div class="form-group">
+              <label for="card-num">Card Number <span>*</span></label>
+              <div class="card-number-wrap">
+                <input type="text" id="card-num" name="card-num" placeholder="•••• •••• •••• ••••"
+                  maxlength="19" inputmode="numeric" required />
+                <div class="card-icons">
+                  <div class="card-icon visa">VISA</div>
+                  <div class="card-icon mc">MC</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="card-exp">Expiration <span>*</span></label>
+                <input type="text" id="card-exp" name="card-exp" placeholder="MM / YY" maxlength="7" required />
+              </div>
+              <div class="form-group">
+                <label for="card-cvv">CVV <span>*</span></label>
+                <input type="text" id="card-cvv" name="card-cvv" placeholder="•••" maxlength="4" inputmode="numeric" required />
+              </div>
+            </div>
+          </div>
+
+          <div class="lock-badge">Payments are encrypted and secure</div>
+
+          <button type="submit" class="submit-btn">
+            <div class="btn-inner">💧 Complete Booking — $35</div>
+          </button>
+
+        </form>
+
+        <!-- SUCCESS STATE -->
+        <div class="success-overlay" id="successOverlay">
+          <div class="success-check">✓</div>
+          <h3>Booking Confirmed!</h3>
+          <p>Thanks! We've received your booking and will send a confirmation to your email. See you on your next trash day! 🎉</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WAVE UP -->
+  <div class="wave" style="background:var(--white)">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="#0d1b2a"/>
+    </svg>
+  </div>
+
+  <!-- MEMBERSHIP TEASER -->
+  <section class="member-section" id="membership">
+    <div class="member-inner">
+      <div class="member-text">
+        <div class="section-label">Coming Soon</div>
+        <h2>Monthly Membership Program</h2>
+        <p>Never worry about scheduling again. Members get automatic monthly cleanings, priority scheduling, and the best rates we offer.</p>
+        <div class="member-perks">
+          <div class="perk"><div class="perk-icon">🔁</div>Auto-scheduled every month on your pickup day</div>
+          <div class="perk"><div class="perk-icon">💰</div>Save 20% vs. booking one-time services</div>
+          <div class="perk"><div class="perk-icon">📱</div>Member portal to view history & manage plan</div>
+          <div class="perk"><div class="perk-icon">❌</div>Cancel anytime — no contracts, no hassle</div>
+          <div class="perk"><div class="perk-icon">⭐</div>Priority scheduling and dedicated support</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-card-title">Monthly Member</div>
+        <div class="member-price-big"><sup>$</sup>28</div>
+        <div class="member-price-period">/ month · billed monthly · cancel anytime</div>
+        <div class="coming-soon-badge">🚀 Coming Soon</div>
+        <p style="color:rgba(255,255,255,.55); font-size:.85rem; margin-bottom:1rem;">Be the first to know when memberships launch. Drop your email and we'll notify you.</p>
+        <div class="notify-form">
+          <input type="email" id="notifyEmail" placeholder="your@email.com" />
+          <button class="notify-btn" onclick="handleNotify()">Notify Me</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">River City Can Cleaners</div>
+    <div class="footer-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#payment">Book a Clean</a>
+      <a href="#membership">Membership</a>
+      <a href="/cdn-cgi/l/email-protection#f199949d9d9eb183988794839298858892909f929d94909f9483df929e9c">Contact Us</a>
+    </div>
+    <p>© 2026 River City Can Cleaners · Sullivan, MO · All rights reserved</p>
+  </footer>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Card number formatting
+  document.getElementById('card-num').addEventListener('input', function(e) {
+    let val = e.target.value.replace(/\D/g,'').substring(0,16);
+    e.target.value = val.replace(/(.{4})/g,'$1 ').trim();
+  });
+
+  // Expiry formatting
+  document.getElementById('card-exp').addEventListener('input', function(e) {
+    let val = e.target.value.replace(/\D/g,'').substring(0,4);
+    if(val.length >= 2) val = val.substring(0,2) + ' / ' + val.substring(2);
+    e.target.value = val;
+  });
+
+  // Zip - numbers only
+  document.getElementById('zip').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g,'').substring(0,5);
+  });
+
+  // CVV - numbers only
+  document.getElementById('card-cvv').addEventListener('input', function(e) {
+    e.target.value = e.target.value.replace(/\D/g,'').substring(0,4);
+  });
+
+  // Dynamic price update
+  document.getElementById('num-cans').addEventListener('change', function() {
+    const btn = document.querySelector('.submit-btn .btn-inner');
+    const prices = { '1':'$35', '2':'$35', '3':'$50', '4':'Quote' };
+    btn.textContent = '💧 Complete Booking — ' + (prices[this.value] || '$35');
+  });
+
+  // Form submission
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // In production: POST to payment processor (Stripe, Square, etc.)
+    document.getElementById('bookingForm').style.display = 'none';
+    document.getElementById('successOverlay').classList.add('active');
+    document.querySelector('.form-info').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Notify me
+  function handleNotify() {
+    const email = document.getElementById('notifyEmail').value;
+    if (!email || !email.includes('@')) { showToast('Please enter a valid email.'); return; }
+    showToast('You\'re on the list! We\'ll email you when memberships launch. 🎉');
+    document.getElementById('notifyEmail').value = '';
+  }
+
+  // Toast helper
+  function showToast(msg) {
+    const t = document.g
